@@ -5,7 +5,7 @@
         "_android:id": "@+id/imageView17",
         "_android:layout_width": "300dp",
         "_android:layout_height": "300dp",
-        "_app:srcCompat": "@drawable/a_0",
+        "_android:background": "#ffffff",
         "_android:layout_x": "0dp",
         "_android:layout_y": "0dp",
         "_android:alpha": "0.5"

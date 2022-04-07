@@ -58,7 +58,9 @@ class MainActivity : AppCompatActivity() {
                     val om = ObjectMapper()
                     val root: Root = om.readValue(obj.toString(), Root::class.java)
                     root.absoluteLayout.androidLayoutWidth?.let {
-                        screenRatioFactor = screenWidth / root.absoluteLayout.androidLayoutWidth.toString().replace("dp", "").toDouble()
+                        screenRatioFactor =
+                            screenWidth / root.absoluteLayout.androidLayoutWidth.toString()
+                                .replace("dp", "").toDouble()
                     }
 
                     root.absoluteLayout?.imageView?.let {
@@ -110,19 +112,33 @@ class MainActivity : AppCompatActivity() {
     private fun addImage(it: ArrayList<ImageView>) {
 
         Log.d("myFactor", "${screenRatioFactor}")
-        // Log.d("myFile", "${it.size}")
+
         it.forEachIndexed { index, imageView ->
+
             newImageView = android.widget.ImageView(this)
 
-            Log.d("myFile", "${index}")
-            val resources: Resources = resources
-            val resourceId: Int = resources.getIdentifier(
-                "${it.get(index).appSrcCompat.toString().replace("@drawable/", "")}",
-                "drawable",
-                packageName
-            )
-            // return resources.getDrawable(resourceId)
-            newImageView?.setImageDrawable(resources.getDrawable(resourceId))
+            if (it.get(index).appSrcCompat.toString() != "null") {
+
+                Log.d("myFile", "${it.get(index).appSrcCompat.toString()}")
+
+                val resources: Resources = resources
+                val resourceId: Int = resources.getIdentifier(
+                    "${it.get(index).appSrcCompat.toString().replace("@drawable/", "")}",
+                    "drawable",
+                    packageName
+                )
+
+                newImageView?.setImageDrawable(resources.getDrawable(resourceId))
+
+            } else {
+                Log.d("myFile", "scr is not null")
+            }
+
+           /* if (it.get(index).androidBackground == "null") {
+                newImageView?.setBackgroundColor(Color.parseColor("${it.get(index).androidBackground}"))
+            }*/
+
+
             val width =
                 (it.get(index).androidLayoutWidth.toString()
                     .replace("dp", "")).toInt() * screenRatioFactor
@@ -261,7 +277,7 @@ class MainActivity : AppCompatActivity() {
                 )
 
                 val typeface = ResourcesCompat.getFont(this@MainActivity, resourceId)
-                if (typeface != null){
+                if (typeface != null) {
                     newTextView?.typeface = typeface
                 }
 
@@ -270,24 +286,6 @@ class MainActivity : AppCompatActivity() {
             }
 
             rootLayout?.addView(newTextView)
-            /*val width =
-                (it.get(index).androidLayoutWidth.toString()
-                    .replace("dp", "")).toInt() * screenRatioFactor
-            val height =
-                (it.get(index).androidLayoutHeight.toString()
-                    .replace("dp", "")).toInt() * screenRatioFactor
-            val parms = RelativeLayout.LayoutParams(width.toInt(), height.toInt())
-            newTextView?.layoutParams = parms*/
-            /*val viewTreeObserver = newTextView?.viewTreeObserver
-            viewTreeObserver?.addOnGlobalLayoutListener(object :
-                ViewTreeObserver.OnGlobalLayoutListener {
-                override fun onGlobalLayout() {
-                    newTextView?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
-
-                    Log.d("myTag", "${newTextView?.width}")
-
-                }
-            })*/
         }
     }
 
