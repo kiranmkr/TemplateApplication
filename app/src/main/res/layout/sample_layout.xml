@@ -67,4 +67,11 @@
         android:layout_y="17dp"
         app:srcCompat="@drawable/_7" />
 
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="TextView"
+        android:textStyle="normal" />
+
 </AbsoluteLayout>

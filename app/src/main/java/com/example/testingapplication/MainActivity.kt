@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.res.AssetManager
 import android.content.res.Resources
 import android.graphics.Color
+import android.graphics.Typeface
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -343,6 +344,20 @@ class MainActivity : AppCompatActivity() {
                 val typeface = ResourcesCompat.getFont(this@MainActivity, resourceId)
                 if (typeface != null) {
                     newTextView?.typeface = typeface
+                }
+
+                if (textView.androidTextStyle != null) {
+                    when {
+                        textView.androidTextStyle.equals("bold") -> {
+                            newTextView?.setTypeface(typeface, Typeface.BOLD)
+                        }
+                        textView.androidTextStyle.equals("italic") -> {
+                            newTextView?.setTypeface(typeface, Typeface.ITALIC)
+                        }
+                        textView.androidTextStyle.equals("normal") -> {
+                            newTextView?.setTypeface(typeface, Typeface.NORMAL)
+                        }
+                    }
                 }
 
             }

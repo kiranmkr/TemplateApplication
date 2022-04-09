@@ -44,4 +44,7 @@ class TextView {
 
     @JsonProperty("_android:fontFamily")
     var androidFontFamily: String? = null
+
+    @JsonProperty("_android:textStyle")
+    var androidTextStyle: String? = null
 }
