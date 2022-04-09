@@ -7,10 +7,13 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
+import android.util.TypedValue
+import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.res.ResourcesCompat
 import com.example.testingapplication.datamodel.ImageView
 import com.example.testingapplication.datamodel.Root
 import com.example.testingapplication.datamodel.TextView
@@ -252,117 +255,87 @@ class MainActivity : AppCompatActivity() {
 
             newTextView = android.widget.TextView(this@MainActivity)
 
-            if (textView.androidText != null) {
-                newTextView?.text = textView.androidText
-            }
-
-           /* if (textView.androidLayoutX != null) {
-                Log.d("myTag", "${textView.androidLayoutX}")
-                val androidX: Double = textView.androidLayoutX!!.toDouble() * screenRatioFactor
-                newTextView?.x = androidX.toFloat()
-            }*/
-
-            rootLayout?.addView(newTextView)
-        }
-
-        /*it.forEachIndexed { index, textView ->
-
-            newTextView = android.widget.TextView(this@MainActivity)
-
-            newTextView?.text = it[index].androidText
-
-            newTextView?.x =
-                (it.get(index).androidLayoutX?.replace("dp", "")
-                    ?.toFloat()?.times(screenRatioFactor))!!.toFloat()
-            newTextView?.y =
-                (it.get(index).androidLayoutY?.replace("dp", "")
-                    ?.toFloat()?.times(screenRatioFactor))!!.toFloat()
-
-            newTextView?.setTextSize(
-                TypedValue.COMPLEX_UNIT_PX,
-                ((it[index].androidTextSize?.replace(
-                    "sp",
-                    ""
-                ))?.toFloat()?.times(screenRatioFactor))!!.toFloat()
-            )
-
-
-            if (it[index].androidRotation != null) {
-                Log.d("myRotation", "roration is  not null")
-                newTextView?.rotation = it[index].androidRotation?.toFloat()!!
-            } else {
-                Log.d("myRotation", "roration is null")
-            }
-
-            Log.d("myTag", "${it.get(index).androidTextSize}")
-            newTextView?.setTextColor(Color.parseColor(it.get(index).androidTextColor))
-            if (it[index].androidBackground != null) {
-                newTextView?.setBackgroundColor(Color.parseColor(it[index].androidBackground))
-            } else {
-                Log.d("myBackgroudColor", "Color is null")
-            }
-
-            if (it[index].androidLetterSpacing != null) {
-                newTextView?.letterSpacing = it[index].androidLetterSpacing?.toFloat()!!
-            } else {
-                Log.d("myLetterSpacing", "values is null")
-            }
-
-            if (it[index].androidTextAlignment != null) {
-                Log.d("myTextAlignment", "values is not null")
-                when {
-                    it[index].androidTextAlignment.equals("center", ignoreCase = true) -> {
-
-                        Log.d("myTextAlignment", "values in center")
-                        newTextView?.textAlignment = View.TEXT_ALIGNMENT_CENTER
-
-                    }
-                    it[index].androidTextAlignment.equals("textEnd", ignoreCase = true) -> {
-
-                        Log.d("myTextAlignment", "values in textEnd")
-                        newTextView?.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
-
-                    }
-                    it[index].androidTextAlignment.equals("textStart", ignoreCase = true) -> {
-                        Log.d("myTextAlignment", "values in textStart")
-                        newTextView?.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
-
-                    }
-
-                }
-            } else {
-                Log.d("myTextAlignment", "values is null")
-            }
-
-            if (it[index].androidAlpha != null) {
-                newTextView?.alpha = it[index].androidAlpha?.toFloat()!!
-            } else {
-                Log.d("myAndroidAlpha", "values is null")
-            }
-
-            if (!it[index].androidLayoutWidth.equals("wrap_content") && !it[index].androidLayoutHeight.equals(
+            if (!textView.androidLayoutWidth.equals("wrap_content") && !textView.androidLayoutHeight.equals(
                     "wrap_content"
                 )
             ) {
 
                 val width =
-                    (it.get(index).androidLayoutWidth.toString()
+                    (textView.androidLayoutWidth.toString()
                         .replace("dp", "")).toInt() * screenRatioFactor
                 val height =
-                    (it.get(index).androidLayoutHeight.toString()
+                    (textView.androidLayoutHeight.toString()
                         .replace("dp", "")).toInt() * screenRatioFactor
                 val parms = RelativeLayout.LayoutParams(width.toInt(), height.toInt())
                 newTextView?.layoutParams = parms
 
-            } else {
-                Log.d("myLayoutWidth", "values is null")
             }
 
-            if (it[index].androidFontFamily != null) {
+            if (textView.androidText != null) {
+                newTextView?.text = textView.androidText
+            }
+
+            if (textView.androidTextColor != null) {
+                newTextView?.setTextColor(Color.parseColor(textView.androidTextColor))
+            }
+
+            if (textView.androidLayoutX != null) {
+                newTextView?.x = (textView.androidLayoutX!!.replace("dp", "").toDouble()
+                        * screenRatioFactor).toFloat()
+            }
+
+            if (textView.androidLayoutY != null) {
+                newTextView?.y = (textView.androidLayoutY!!.replace("dp", "").toDouble()
+                        * screenRatioFactor).toFloat()
+            }
+
+            if (textView.androidTextSize != null) {
+                newTextView?.setTextSize(
+                    TypedValue.COMPLEX_UNIT_PX,
+                    ((textView.androidTextSize?.replace(
+                        "sp",
+                        ""
+                    ))?.toFloat()?.times(screenRatioFactor))!!.toFloat()
+                )
+            }
+
+            if (textView.androidBackground != null) {
+                newTextView?.setBackgroundColor(Color.parseColor(textView.androidBackground))
+            }
+
+            if (textView.androidLetterSpacing != null) {
+                newTextView?.letterSpacing = textView.androidLetterSpacing!!.toFloat()
+            }
+
+            if (textView.androidRotation != null) {
+                newTextView?.rotation = textView.androidRotation!!.toFloat()
+            }
+
+            if (textView.androidTextAlignment != null) {
+
+                when {
+                    textView.androidTextAlignment.equals("center", ignoreCase = true) -> {
+                        newTextView?.textAlignment = View.TEXT_ALIGNMENT_CENTER
+                    }
+                    textView.androidTextAlignment.equals("textEnd", ignoreCase = true) -> {
+                        newTextView?.textAlignment = View.TEXT_ALIGNMENT_TEXT_END
+
+                    }
+                    textView.androidTextAlignment.equals("textStart", ignoreCase = true) -> {
+                        newTextView?.textAlignment = View.TEXT_ALIGNMENT_TEXT_START
+                    }
+                }
+            }
+
+            if (textView.androidAlpha != null) {
+                newTextView?.alpha = textView.androidAlpha!!.toFloat()
+            }
+
+            if (textView.androidFontFamily != null) {
 
                 val resources: Resources = resources
                 val resourceId: Int = resources.getIdentifier(
-                    it.get(index).androidFontFamily.toString().replace("@font/", ""),
+                    textView.androidFontFamily.toString().replace("@font/", ""),
                     "font",
                     packageName
                 )
@@ -372,12 +345,11 @@ class MainActivity : AppCompatActivity() {
                     newTextView?.typeface = typeface
                 }
 
-            } else {
-                Log.d("myFontValue", "values is null")
             }
 
             rootLayout?.addView(newTextView)
-        }*/
+        }
+
     }
 
     private fun loadJSONFromAsset(): String? {
