@@ -7,13 +7,10 @@ import android.graphics.Color
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.util.TypedValue
-import android.view.View
 import android.view.ViewTreeObserver
 import android.widget.RelativeLayout
 import androidx.annotation.RequiresApi
 import androidx.appcompat.app.AppCompatActivity
-import androidx.core.content.res.ResourcesCompat
 import com.example.testingapplication.datamodel.ImageView
 import com.example.testingapplication.datamodel.Root
 import com.example.testingapplication.datamodel.TextView
@@ -25,8 +22,8 @@ import java.nio.charset.StandardCharsets
 
 class MainActivity : AppCompatActivity() {
 
-    var imageView: ArrayList<ImageView>? = ArrayList()
-    var textViewJson: ArrayList<TextView>? = ArrayList()
+    var imageViewArray: ArrayList<ImageView> = ArrayList()
+    var textViewJson: ArrayList<TextView> = ArrayList()
     var rootLayout: RelativeLayout? = null
     var screenRatioFactor: Double = 1.0
     var screenWidth: Double = 720.0
@@ -44,57 +41,88 @@ class MainActivity : AppCompatActivity() {
             override fun onGlobalLayout() {
                 rootLayout?.viewTreeObserver?.removeOnGlobalLayoutListener(this)
 
-                //Log.d("myTag", "${rootLayout?.width}")
-
                 if (rootLayout != null) {
                     screenWidth = rootLayout!!.width.toDouble()
                 }
 
                 try {
 
-                    //val jsonArray = JSONArray(loadJSONFromAsset())
-                    val obj = JSONObject(loadJSONFromAsset())
+                    if (loadJSONFromAsset() != null) {
 
-                    val om = ObjectMapper()
-                    val root: Root = om.readValue(obj.toString(), Root::class.java)
-                    root.absoluteLayout.androidLayoutWidth?.let {
-                        screenRatioFactor =
-                            screenWidth / root.absoluteLayout.androidLayoutWidth.toString()
-                                .replace("dp", "").toDouble()
-                    }
+                        val obj = JSONObject(loadJSONFromAsset()!!)
+                        val om = ObjectMapper()
+                        val root: Root = om.readValue(obj.toString(), Root::class.java)
 
-                    root.absoluteLayout?.imageView?.let {
-                        if (it.size > 0) {
+                        if (root.absoluteLayout != null) {
+                            screenRatioFactor =
+                                screenWidth / root.absoluteLayout!!.androidLayoutWidth!!.replace(
+                                    "dp",
+                                    ""
+                                ).toDouble()
 
-                            it.forEachIndexed { index, element ->
-                                imageView?.add(index, element)
+                            if (root.absoluteLayout!!.imageView != null) {
+                                root.absoluteLayout!!.imageView!!.forEachIndexed { index, imageView ->
+                                    imageViewArray.add(index, imageView)
+                                }
                             }
-
-                            if (imageView != null && imageView!!.size > 0) {
-                                addImage(imageView!!)
-                            } else {
-                                Log.d("myTag", "image list is null")
+                            if (root.absoluteLayout!!.textView != null) {
+                                root.absoluteLayout?.textView?.forEachIndexed { index, textview ->
+                                    textViewJson.add(index, textview)
+                                }
                             }
-
                         }
-                    }
 
-                    root.absoluteLayout?.textView?.let {
-                        if (it.size > 0) {
-
-                            it.forEachIndexed { index, element ->
-                                textViewJson?.add(index, element)
-                            }
-
-                            if (textViewJson != null && textViewJson!!.size > 0) {
-                                addText(textViewJson!!)
-                            } else {
-                                Log.d("myTag", "Array size is null")
-                            }
-
+                        if (imageViewArray.size > 0) {
+                            addImage(imageViewArray)
                         }
-                    }
 
+                        if (textViewJson.size > 0) {
+                            addText(textViewJson)
+                        }
+
+                        /* root.absoluteLayout?.androidLayoutWidth?.let {
+                             screenRatioFactor = screenWidth / it.replace("dp", "").toDouble()
+                         }
+
+                         root.absoluteLayout?.imageView?.let {
+
+                             if (it.size > 0) {
+
+                                 it.forEachIndexed { index, element ->
+                                     imageView?.add(index, element)
+                                 }
+
+                                 if (imageView != null && imageView!!.size > 0) {
+                                     addImage(imageView!!)
+                                     Log.d("myError", "Size is not  null")
+                                 } else {
+                                     Log.d("myTag", "image list is null")
+                                 }
+
+                             }else{
+                                 Log.d("myError", "Size is null")
+                             }
+                         }
+
+                         root.absoluteLayout?.textView?.let {
+                             if (it.size > 0) {
+
+                                 it.forEachIndexed { index, element ->
+                                     textViewJson?.add(index, element)
+                                 }
+
+                                 if (textViewJson != null && textViewJson!!.size > 0) {
+                                     addText(textViewJson!!)
+                                 } else {
+                                     Log.d("myTag", "Array size is null")
+                                 }
+
+                             }
+                         }*/
+
+                    } else {
+                        Log.d("myError", "wrong json")
+                    }
 
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -109,96 +137,159 @@ class MainActivity : AppCompatActivity() {
 
     var newImageView: android.widget.ImageView? = null
 
-    private fun addImage(it: ArrayList<ImageView>) {
+    private fun addImage(array: ArrayList<ImageView>) {
 
-        Log.d("myFactor", "${screenRatioFactor}")
+        array.forEachIndexed { _, imageView ->
 
-        it.forEachIndexed { index, imageView ->
+            newImageView = android.widget.ImageView(this@MainActivity)
 
-            newImageView = android.widget.ImageView(this)
-
-            if (it.get(index).appSrcCompat.toString() != "null") {
-
-                Log.d("myFile", "${it.get(index).appSrcCompat.toString()}")
+            if (imageView.appSrcCompat != null) {
 
                 val resources: Resources = resources
                 val resourceId: Int = resources.getIdentifier(
-                    "${it.get(index).appSrcCompat.toString().replace("@drawable/", "")}",
+                    imageView.appSrcCompat.toString().replace("@drawable/", ""),
                     "drawable",
                     packageName
                 )
 
                 newImageView?.setImageDrawable(resources.getDrawable(resourceId))
-
-            } else {
-                Log.d("myFile", "scr is not null")
             }
 
-           /* if (it.get(index).androidBackground == "null") {
-                newImageView?.setBackgroundColor(Color.parseColor("${it.get(index).androidBackground}"))
-            }*/
+            if (imageView.androidBackground != null) {
 
+                newImageView?.setBackgroundColor(Color.parseColor(imageView.androidBackground))
+            }
 
-            val width =
-                (it.get(index).androidLayoutWidth.toString()
+            if (imageView.androidLayoutWidth != null && imageView.androidLayoutHeight != null) {
+
+                val width = (imageView.androidLayoutWidth.toString()
                     .replace("dp", "")).toInt() * screenRatioFactor
-            val height =
-                (it.get(index).androidLayoutHeight.toString()
+                val height = (imageView.androidLayoutHeight.toString()
                     .replace("dp", "")).toInt() * screenRatioFactor
+                val layoutParams = RelativeLayout.LayoutParams(width.toInt(), height.toInt())
+                newImageView?.layoutParams = layoutParams
+            }
+
+            if (imageView.androidLayoutX != null) {
+                newImageView?.x = (imageView.androidLayoutX!!.replace("dp", "").toDouble()
+                        * screenRatioFactor).toFloat()
+            }
+
+            if (imageView.androidLayoutY != null) {
+                newImageView?.y = (imageView.androidLayoutY!!.replace("dp", "").toDouble()
+                        * screenRatioFactor).toFloat()
+            }
+
+            if (imageView.androidRotation != null) {
+                newImageView?.rotation = imageView.androidRotation!!.toFloat()
+            }
+
+            if (imageView.androidAlpha != null) {
+                newImageView?.alpha = imageView.androidAlpha!!.toFloat()
+            }
+
+            rootLayout?.addView(newImageView)
+
+        }
+
+        /*it.forEachIndexed { index, imageView ->
+
+            newImageView = android.widget.ImageView(this)
+
+            it[index].appSrcCompat?.let {
+
+                Log.d("myFile", "${it.toString()}")
+
+                val resources: Resources = resources
+                val resourceId: Int = resources.getIdentifier(
+                    "${it.toString().replace("@drawable/", "")}",
+                    "drawable",
+                    packageName
+                )
+
+                newImageView?.setImageDrawable(resources.getDrawable(resourceId))
+            }
+
+            it[index].androidBackground?.let {
+                newImageView?.setBackgroundColor(Color.parseColor(it))
+            }
+
+            val width = (it[index].androidLayoutWidth.toString()
+                .replace("dp", "")).toInt() * screenRatioFactor
+            val height = (it[index].androidLayoutHeight.toString()
+                .replace("dp", "")).toInt() * screenRatioFactor
+
             val parms = RelativeLayout.LayoutParams(width.toInt(), height.toInt())
             newImageView?.layoutParams = parms
             newImageView?.x =
-                (it.get(index).androidLayoutX.replace("dp", "")
-                    .toFloat() * screenRatioFactor).toFloat()
+                (it.get(index).androidLayoutX?.replace("dp", "")
+                    ?.toFloat()?.times(screenRatioFactor))!!.toFloat()
             newImageView?.y =
-                (it.get(index).androidLayoutY.replace("dp", "")
-                    .toFloat() * screenRatioFactor).toFloat()
+                (it.get(index).androidLayoutY?.replace("dp", "")
+                    ?.toFloat()?.times(screenRatioFactor))!!.toFloat()
 
             if (it[index].androidRotation != null) {
                 Log.d("myRotation", "roration is  not null")
-                newImageView?.rotation = it[index].androidRotation.toFloat()
+                newImageView?.rotation = it[index].androidRotation?.toFloat()!!
             } else {
                 Log.d("myRotation", "roration is null")
             }
 
-            if (it[index].androidAlpha != null) {
-                newImageView?.alpha = it[index].androidAlpha.toFloat()
-            } else {
-                Log.d("myAndroidAlpha", "values is null")
+            it[index].androidAlpha?.let {
+                newImageView?.alpha = it.toFloat()
             }
 
             rootLayout?.addView(newImageView)
-        }
+        }*/
 
     }
 
     var newTextView: android.widget.TextView? = null
 
-    private fun addText(it: ArrayList<TextView>) {
-        it.forEachIndexed { index, textView ->
-            newTextView = android.widget.TextView(this)
+    private fun addText(arratlist: ArrayList<TextView>) {
+
+        arratlist.forEachIndexed { _, textView ->
+
+            newTextView = android.widget.TextView(this@MainActivity)
+
+            if (textView.androidText != null) {
+                newTextView?.text = textView.androidText
+            }
+
+           /* if (textView.androidLayoutX != null) {
+                Log.d("myTag", "${textView.androidLayoutX}")
+                val androidX: Double = textView.androidLayoutX!!.toDouble() * screenRatioFactor
+                newTextView?.x = androidX.toFloat()
+            }*/
+
+            rootLayout?.addView(newTextView)
+        }
+
+        /*it.forEachIndexed { index, textView ->
+
+            newTextView = android.widget.TextView(this@MainActivity)
 
             newTextView?.text = it[index].androidText
 
             newTextView?.x =
-                (it.get(index).androidLayoutX.replace("dp", "")
-                    .toFloat() * screenRatioFactor).toFloat()
+                (it.get(index).androidLayoutX?.replace("dp", "")
+                    ?.toFloat()?.times(screenRatioFactor))!!.toFloat()
             newTextView?.y =
-                (it.get(index).androidLayoutY.replace("dp", "")
-                    .toFloat() * screenRatioFactor).toFloat()
+                (it.get(index).androidLayoutY?.replace("dp", "")
+                    ?.toFloat()?.times(screenRatioFactor))!!.toFloat()
 
             newTextView?.setTextSize(
                 TypedValue.COMPLEX_UNIT_PX,
-                ((it[index].androidTextSize.replace(
+                ((it[index].androidTextSize?.replace(
                     "sp",
                     ""
-                )).toFloat() * screenRatioFactor).toFloat()
+                ))?.toFloat()?.times(screenRatioFactor))!!.toFloat()
             )
 
 
             if (it[index].androidRotation != null) {
                 Log.d("myRotation", "roration is  not null")
-                newTextView?.rotation = it[index].androidRotation.toFloat()
+                newTextView?.rotation = it[index].androidRotation?.toFloat()!!
             } else {
                 Log.d("myRotation", "roration is null")
             }
@@ -212,7 +303,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (it[index].androidLetterSpacing != null) {
-                newTextView?.letterSpacing = it[index].androidLetterSpacing.toFloat()
+                newTextView?.letterSpacing = it[index].androidLetterSpacing?.toFloat()!!
             } else {
                 Log.d("myLetterSpacing", "values is null")
             }
@@ -244,7 +335,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             if (it[index].androidAlpha != null) {
-                newTextView?.alpha = it[index].androidAlpha.toFloat()
+                newTextView?.alpha = it[index].androidAlpha?.toFloat()!!
             } else {
                 Log.d("myAndroidAlpha", "values is null")
             }
@@ -271,7 +362,7 @@ class MainActivity : AppCompatActivity() {
 
                 val resources: Resources = resources
                 val resourceId: Int = resources.getIdentifier(
-                    "${it.get(index).androidFontFamily.toString().replace("@font/", "")}",
+                    it.get(index).androidFontFamily.toString().replace("@font/", ""),
                     "font",
                     packageName
                 )
@@ -286,7 +377,7 @@ class MainActivity : AppCompatActivity() {
             }
 
             rootLayout?.addView(newTextView)
-        }
+        }*/
     }
 
     private fun loadJSONFromAsset(): String? {
@@ -294,7 +385,7 @@ class MainActivity : AppCompatActivity() {
         var json: String? = null
 
         json = try {
-            val `is`: InputStream = this.assets.open("testing.json")
+            val `is`: InputStream = this.assets.open("2.json")
             val size = `is`.available()
             val buffer = ByteArray(size)
             `is`.read(buffer)
