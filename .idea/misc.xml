@@ -8,10 +8,13 @@
         <entry key="..\:/TestingApplication/app/src/main/res/layout/activity_main.xml" value="0.33" />
         <entry key="..\:/TestingApplication/app/src/main/res/layout/new_sample_layout.xml" value="0.1" />
         <entry key="..\:/TestingApplication/app/src/main/res/layout/sample_layout.xml" value="0.5" />
+        <entry key="..\:/Users/raheel/AndroidStudioProjects/TemplateApplication/app/src/main/res/layout/activity_main.xml" value="0.18518518518518517" />
+        <entry key="..\:/Users/raheel/AndroidStudioProjects/TemplateApplication/app/src/main/res/layout/new_sample_layout.xml" value="0.20833333333333334" />
+        <entry key="..\:/Users/raheel/AndroidStudioProjects/TemplateApplication/app/src/main/res/layout/sample_layout.xml" value="0.20833333333333334" />
       </map>
     </option>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="1.8" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="1.8" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/build/classes" />
   </component>
   <component name="ProjectType">
